@@ -33,13 +33,12 @@ const LoginForm = () => {
       });
   };
 
-
   return (
-    <div className="main-container h-screen w-screen bg-cover bg-no-repeat bg-center" style={{ backgroundImage: "url('images/homebg.jpg')" }}>
-      <div className="flex justify-center items-center h-full">
-        <div className="main-form bg-gray-900 bg-opacity-75 bg-blur rounded-lg flex w-loginform h-3/6 shadow-xl-black">
-          <div className="promo flex flex-col justify-center items-start bg-cover bg-no-repeat bg-center w-1/2 rounded-l-lg" style={{ backgroundImage: "url('images/promo.jpg')" }}></div>
-          <form className="inputs flex flex-col flex-grow w-1/2 p-6 justify-center " onSubmit={handleSubmit}>
+    <div className="main-container min-h-screen min-w-screen bg-cover bg-no-repeat bg-center" style={{ backgroundImage: "url('images/homebg.jpg')" }}>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="main-form bg-gray-900 bg-opacity-75 bg-blur rounded-lg flex w-11/12 lg:w-loginform h-[30rem] shadow-xl-black">
+          <div className="promo hidden min-[420px]:flex md:flex lg:flex flex-col justify-center items-start bg-cover bg-no-repeat bg-center w-1/2 rounded-l-lg" style={{ backgroundImage: "url('images/promo.jpg')" }}></div>
+          <form className="inputs flex flex-col flex-grow w-full lg:w-1/2 p-6 justify-center" onSubmit={handleSubmit}>
             <div className="mt-4">
               <label htmlFor="email" className="block text-gray-300 mb-1">E-mail</label>
               <div className="relative">
@@ -70,14 +69,15 @@ const LoginForm = () => {
                 />
               </div>
             </div>
-            <div className="buttons flex items-center justify-between flex-col">
-              <button type="submit" className="my-4 p-2 bg-indigo-700 w-96 text-white font-medium rounded hover:bg-indigo-900 transition-all ">
+            <div className="buttons flex flex-col items-start">
+              <button type="submit" className="my-4 p-2 bg-indigo-700 w-full lg:w-100 xl:w-100 text-white font-medium rounded hover:bg-indigo-900 transition-all">
                 Autentifică-te
               </button>
               <div className="links flex flex-row">
-                <button className="text-gray-400 hover:underline text-xs mr-[17.5rem]" onClick={() => navigate('/register')}>Încă nu ai un cont?</button>
+                <button className="text-gray-400 hover:underline text-xs ml-0 mt-2 lg:mt-0" onClick={() => navigate('/register')}>Încă nu ai un cont?</button>
               </div>
             </div>
+
           </form>
         </div>
       </div>

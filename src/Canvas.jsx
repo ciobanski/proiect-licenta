@@ -24,6 +24,32 @@ function Canvas() {
   const photoUrlParam = queryParams.get('photoUrl');
   const [selectedImage, setSelectedImage] = useState(photoUrlParam || null);
 
+  const translations = {
+    ro: {
+      labels: {
+        crop: 'Decupare',
+        rotate: 'Rotire',
+        flipX: 'Flip Orizontal',
+        flipY: 'Flip Vertical',
+        brightness: 'Luminozitate',
+        contrast: 'Contrast',
+        hueSaturation: 'Nuanță/Saturare',
+        warmth: 'Căldură',
+        blur: 'Estompare',
+        threshold: 'Threshold',
+        posterize: 'Posterizare',
+        pixelate: 'Pixelare',
+        noise: 'Zgomot',
+        filters: 'Filtre',
+        annotate: 'Adnotare',
+        resize: 'Redimensionare',
+        stroke: 'Contur',
+        save: 'Salvează',
+        close: 'Închide',
+      },
+    },
+  };
+
   const closeImgEditor = () => {
     setIsImgEditorShown(false);
   };
@@ -32,7 +58,6 @@ function Canvas() {
     const file = event.target.files[0];
     setSelectedImage(URL.createObjectURL(file));
   };
-
   const handleSave = async (savedImageData) => {
     if (savedImageData && savedImageData.imageCanvas) {
       savedImageData.imageCanvas.toBlob(async (blob) => {
@@ -73,7 +98,7 @@ function Canvas() {
 
   const goBack = () => {
     const confirm = window.confirm(
-      'Are you sure you want to leave? All unsaved progress will be lost'
+      'Ești sigur ca vrei să părăsești? Tot conținutul nesalvat va fi pierdut.'
     );
     if (confirm) {
       navigate('/user-panel');
@@ -109,7 +134,7 @@ function Canvas() {
 
   return (
     <div>
-      <div className='bg-gradient-to-b from-blue-100 to-indigo-200 w-screen h-screen fixed z-30'>
+      <div className='bg-gradient-to-b from-blue-100 to-indigo-200 w-screen h-screen fixed '>
         <nav className="bg-gradient-to-r from-indigo-300 via-purple-400 to-blue-500 w-full p-3 drop-shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -138,11 +163,11 @@ function Canvas() {
           </div>
         </nav>
 
-        <div className="flex justify-center items-center min-h-screen bg-gray-300 over">
+        <div className="flex justify-center  items-center min-h-screen ">
           {isImgEditorShown && (
-            <div className="w-9/12 h-[50rem] bg-white drop-shadow-md p-6">
+            <div className="w-9/12  sm:h-[30rem] md:h-[35rem] lg:h-[40rem] bg-white drop-shadow-md p-6 max-[550px]:w-[20rem] sm:w-[40rem] md:w-[50rem] lg:w-[55rem]">
               <input type="file" accept="image/*" onChange={handleFileChange} id="upload" className='hidden' />
-              <label htmlFor="upload" className='bg-[#6879eb] text-slate-50 text-xs px-3 py-2 cursor-pointer ml-4'>Upload</label>
+              <label htmlFor="upload" className='bg-slate-500 text-slate-50 text-xs px-[0.867rem] py-[0.367rem] max-[439px]:ml-[0.367rem] cursor-pointer ml-3 hover:bg-slate-600 font-arial'>Încarcă</label>
 
               <FilerobotImageEditor
                 source={selectedImage || "https://scaleflex.airstore.io/demo/stephen-walker-unsplash.jpg"}
@@ -150,6 +175,8 @@ function Canvas() {
                   handleSave(savedImageData);
                   setSavedImageData(savedImageData);
                 }}
+                translations={translations}
+                language="ro"
                 onClose={closeImgEditor}
                 annotationsCommon={{
                   fill: '#ff0000',

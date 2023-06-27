@@ -5,7 +5,6 @@ import { RiLogoutBoxLine } from 'react-icons/ri';
 import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { getDatabase, ref as databaseRef, get, set } from 'firebase/database';
 import { getStorage, ref as storageRef, deleteObject, uploadBytes } from 'firebase/storage';
-import AvatarEditor from 'react-avatar-editor';
 import database from './firebase';
 
 const UserPanel = () => {
@@ -167,7 +166,7 @@ const UserPanel = () => {
                 <div className="relative z-50">
                   <div className="user-button text-indigo-50 h-10 bg-transparent p-2 flex items-center rounded-md">
                     <img className="w-8 h-8 rounded-full mr-2" src="./images/pfp.png  " alt="" />
-                    <span className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    <span className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis max-[290px]:hidden">
                       {userData.name}
                     </span>
                   </div>
@@ -176,25 +175,10 @@ const UserPanel = () => {
             </div>
           </div>
         </nav>
-        {showLogoutConfirmation && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-            <div className="bg-white p-4 rounded shadow-md">
-              <p className="mb-4">Are you sure you want to log out?</p>
-              <div className="flex justify-end">
-                <button className="text-gray-500 mr-2" onClick={handleCancelLogout}>
-                  No
-                </button>
-                <button className="text-red-500" onClick={handleLogoutConfirmation}>
-                  Yes
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        <div className="relative z-10">
-          <div className="photo-grid bg-indigo-100 bg-opacity-50 rounded-md drop-shadow-md flex flex-wrap justify-start gap-6 m-6 p-4 h-auto">
+        <div className='photo-grid-container h-[calc(100vh-4rem)] overflow-y-auto'>
+          <div className="photo-grid bg-indigo-100 bg-opacity-50 rounded-md drop-shadow-md grid grid-cols-1 scroll sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 m-6 p-4">
             {photos.map((photoUrl) => (
-              <div key={photoUrl} className="bg-white rounded-lg shadow-md overflow-hidden w-40 h-56 relative">
+              <div key={photoUrl} className="bg-white rounded-lg shadow-md overflow-hidden relative">
                 <img src={photoUrl} alt="" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 flex items-end justify-end">
                   <button
@@ -203,9 +187,8 @@ const UserPanel = () => {
                   >
                     <IoPencilOutline className="w-5 h-5" />
                   </button>
-
                   <button
-                    className="bg-red-500 text-white ml-1 p-2 rounded-md transition-colors duration-300 hover:bg-indigo-600"
+                    className="bg-red-500 text-white ml-1 p-2 rounded-md transition-colors duration-300 hover:bg-red-600"
                     onClick={() => {
                       setSelectedPhoto(photoUrl);
                       setShowDeleteConfirmation(true);
@@ -214,12 +197,25 @@ const UserPanel = () => {
                     <IoTrashOutline className="w-5 h-5" />
                   </button>
                 </div>
-
-
               </div>
             ))}
+          </div></div>
+
+        {showLogoutConfirmation && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-4 rounded shadow-md">
+              <p className="mb-4">Ești sigur că vrei să te deconectezi?</p>
+              <div className="flex justify-end">
+                <button className="text-gray-500 mr-2" onClick={handleCancelLogout}>
+                  Nu
+                </button>
+                <button className="text-red-500" onClick={handleLogoutConfirmation}>
+                  Da
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
         <button
           className="p-4 rounded-2xl fixed bottom-4 right-4 drop-shadow-sm bg-indigo-300 hover:bg-purple-200 transition-colors duration-500"
           onClick={goToCanvas}
@@ -235,13 +231,13 @@ const UserPanel = () => {
         {showDeleteConfirmation && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div className="bg-white p-4 rounded shadow-md">
-              <p className="mb-4">Are you sure you want to delete this photo?</p>
+              <p className="mb-4">Ești sigur că vrei să stergi această fotografie?</p>
               <div className="flex justify-end">
                 <button className="text-gray-500 mr-2" onClick={handleCancelDelete}>
-                  No
+                  Nu
                 </button>
                 <button className="text-red-500" onClick={handleDeleteConfirmation}>
-                  Yes
+                  Da
                 </button>
               </div>
             </div>

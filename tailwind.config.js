@@ -28,7 +28,13 @@ module.exports = {
 
       height: {
         75: '75%',
-      }
+      },
+
+      fontFamily: {
+        'arial': ['Arial', 'sans-serif'],
+      },
+
+
     },
     plugins: [],
   },
