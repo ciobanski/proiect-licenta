@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; //importurile bibliotecilor
 import FilerobotImageEditor, {
   TABS,
   TOOLS,
@@ -11,8 +11,8 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import database from './firebase';
 
-function Canvas() {
-  const [isImgEditorShown, setIsImgEditorShown] = useState(true);
+function Canvas() { //declararea functiei Canvas
+  const [isImgEditorShown, setIsImgEditorShown] = useState(true); //declararea functiilor prin hook-uri sau a diferitor variable
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [savedImageData, setSavedImageData] = useState(null);
@@ -23,8 +23,9 @@ function Canvas() {
   const queryParams = new URLSearchParams(location.search);
   const photoUrlParam = queryParams.get('photoUrl');
   const [selectedImage, setSelectedImage] = useState(photoUrlParam || null);
+  const [selectedFormat, setSelectedFormat] = useState('image/png')
 
-  const translations = {
+  const translations = { //adaugarea elementelor in limba romana in editorul foto
     ro: {
       labels: {
         crop: 'Decupare',
@@ -50,22 +51,33 @@ function Canvas() {
     },
   };
 
-  const closeImgEditor = () => {
+  const closeImgEditor = () => { //functionalitate inchidere editor
     setIsImgEditorShown(false);
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (event) => { //functionalitate incarcare fisiere
     const file = event.target.files[0];
     setSelectedImage(URL.createObjectURL(file));
   };
-  const handleSave = async (savedImageData) => {
+  const handleSave = async (savedImageData, selectedFormat) => { //functionalitate salvare imagini
     if (savedImageData && savedImageData.imageCanvas) {
       savedImageData.imageCanvas.toBlob(async (blob) => {
-        saveAs(blob, savedImageData.name);
+        let fileExtension = 'jpg';
+        if (selectedFormat) {
+          if (selectedFormat === 'image/jpeg') {
+            fileExtension = 'jpg';
+          } else if (selectedFormat === 'image/png') {
+            fileExtension = 'png';
+          } else if (selectedFormat === 'image/webp') {
+            fileExtension = 'webp';
+          }
+        }
+
+        const { name } = savedImageData;
+        const filename = `${name}.${fileExtension}`;
+        saveAs(blob, filename);
 
         try {
-          const { name, extension } = savedImageData;
-          const filename = `${name}.${extension}`;
           const storageReference = storageRef(storage, `images/${filename}`);
           await uploadBytes(storageReference, blob);
           console.log('Image uploaded to Firebase Storage');
@@ -96,7 +108,11 @@ function Canvas() {
   };
 
 
-  const goBack = () => {
+  const handleFormatSelection = (format) => {
+    setSelectedFormat(format);
+  };
+
+  const goBack = () => { //functionalitate intoarcere la pagina de userpanel
     const confirm = window.confirm(
       'Ești sigur ca vrei să părăsești? Tot conținutul nesalvat va fi pierdut.'
     );
@@ -105,7 +121,7 @@ function Canvas() {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => { //verificare conexiune utilizator
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (user) {
         const userReference = dbRef(database, `users/${user.uid}`);
@@ -131,7 +147,7 @@ function Canvas() {
       unsubscribeAuth();
     };
   }, []);
-
+  //codul JSX pentru interfata
   return (
     <div>
       <div className='bg-gradient-to-b from-blue-100 to-indigo-200 w-screen h-screen fixed '>
@@ -153,7 +169,7 @@ function Canvas() {
                       src="./images/pfp.png"
                       alt=""
                     />
-                    <span className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    <span /*Afisarea numelui utilizatorului*/ className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
                       {userData.name}
                     </span>
                   </div>
@@ -164,15 +180,15 @@ function Canvas() {
         </nav>
 
         <div className="flex justify-center  items-center min-h-screen ">
-          {isImgEditorShown && (
+          {isImgEditorShown && ( /*Initializarea editorului foto si a functiei de incarcare imagini*/
             <div className="w-9/12  sm:h-[30rem] md:h-[35rem] lg:h-[40rem] bg-white drop-shadow-md p-6 max-[550px]:w-[20rem] sm:w-[40rem] md:w-[50rem] lg:w-[55rem]">
               <input type="file" accept="image/*" onChange={handleFileChange} id="upload" className='hidden' />
               <label htmlFor="upload" className='bg-slate-500 text-slate-50 text-xs px-[0.867rem] py-[0.367rem] max-[439px]:ml-[0.367rem] cursor-pointer ml-3 hover:bg-slate-600 font-arial'>Încarcă</label>
 
-              <FilerobotImageEditor
+              <FilerobotImageEditor /*Editorul foto*/
                 source={selectedImage || "https://scaleflex.airstore.io/demo/stephen-walker-unsplash.jpg"}
                 onSave={(savedImageData, imageDesignState) => {
-                  handleSave(savedImageData);
+                  handleSave(savedImageData, selectedFormat);
                   setSavedImageData(savedImageData);
                 }}
                 translations={translations}
@@ -202,7 +218,7 @@ function Canvas() {
                       groups: [
                         {
                           titleKey: 'facebook',
-                          items: [
+                          items: [                //Intre liniile 202-240 sunt descrise diferite tipuri de formatiuni de imagini, in functie de raportul de aspect sau rezolutii standard pentru web
                             {
                               titleKey: 'profile',
                               width: 180,
@@ -221,7 +237,7 @@ function Canvas() {
                     },
                   ],
                 }}
-                tabsIds={[
+                tabsIds={[ //Initializarea butoanelor de navigare
                   TABS.ADJUST,
                   TABS.ANNOTATE,
                   TABS.WATERMARK,
@@ -238,19 +254,6 @@ function Canvas() {
                   TABS.BACKGROUNDS,
                 ]}
                 hiddenTabs={[TABS.HEADER, TABS.STICKERS, TABS.OVERLAY]}
-                customElements={[
-                  {
-                    component: () => (
-                      <button
-                        className="custom-button bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded"
-                        onClick={() => console.log('Custom Button Clicked')}
-                      >
-                        Custom Button
-                      </button>
-                    ),
-                    group: 'header',
-                  },
-                ]}
                 header={{ addDesignButton: { hidden: true } }}
                 sidebar={{ addElementButton: { hidden: true } }}
                 tools={[TOOLS.CROP, TOOLS.ROTATE, TOOLS.TEXT, TOOLS.RESIZE]}

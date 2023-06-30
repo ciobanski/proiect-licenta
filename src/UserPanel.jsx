@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; //import de biblioteci
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IoCreateOutline, IoTrashOutline, IoPencilOutline } from 'react-icons/io5';
 import { RiLogoutBoxLine } from 'react-icons/ri';
@@ -7,8 +7,8 @@ import { getDatabase, ref as databaseRef, get, set } from 'firebase/database';
 import { getStorage, ref as storageRef, deleteObject, uploadBytes } from 'firebase/storage';
 import database from './firebase';
 
-const UserPanel = () => {
-  const [userData, setUserData] = useState(null);
+const UserPanel = () => { //initializarea functiei UserPanel
+  const [userData, setUserData] = useState(null); //declarare stari prin hook-uri si declarare alte variabile
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const [photos, setPhotos] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -20,17 +20,17 @@ const UserPanel = () => {
   const storage = getStorage();
 
 
-  const goToCanvas = () => {
+  const goToCanvas = () => { //functia care duce catre editorul foto
     navigate('/canvas');
   };
-  const handleEditPhoto = (photoUrl) => {
+  const handleEditPhoto = (photoUrl) => { //functia care duce fotografii deja salvate catre editorul foto
     navigate(`/canvas?photoUrl=${encodeURIComponent(photoUrl)}`);
   };
-  const handleLogout = () => {
+  const handleLogout = () => { //functia care gestioneaza butonul de deconectare
     setShowLogoutConfirmation(true);
   };
 
-  const handleLogoutConfirmation = () => {
+  const handleLogoutConfirmation = () => { //functionalitatea deconectarii
     const auth = getAuth();
     signOut(auth)
       .then(() => {
@@ -46,32 +46,24 @@ const UserPanel = () => {
     setShowLogoutConfirmation(false);
   };
 
-  const handleDeleteConfirmation = () => {
+  const handleDeleteConfirmation = () => { //functia care gestioneaza confirmarea stergerii unei fotografii din galerie
     const user = getAuth().currentUser;
     if (user) {
       const userPhotosRef = databaseRef(database, `users/${user.uid}/urls`);
-      const storageReference = storageRef(getStorage(), selectedPhoto); // Use storageRef for storage reference
-
-      // Retrieve the array of photo URLs from the database
+      const storageReference = storageRef(getStorage(), selectedPhoto);
       get(userPhotosRef)
         .then((snapshot) => {
           const photoUrls = snapshot.val();
           if (photoUrls && Array.isArray(photoUrls)) {
-            // Filter out the deleted photo URL from the array
             const updatedPhotoUrls = photoUrls.filter((url) => url !== selectedPhoto);
-
-            // Update the modified array in the database
             set(userPhotosRef, updatedPhotoUrls)
               .then(() => {
                 console.log('Photo URL updated successfully in the database.');
-                // Remove the photo from Firebase Storage
                 deleteObject(storageReference)
                   .then(() => {
                     console.log('Photo deleted successfully from Firebase Storage.');
-                    // Remove the photo from the local state
                     setPhotos(updatedPhotoUrls);
-                    // Close the delete confirmation modal
-                    setSelectedPhoto(null); // Reset selected photo
+                    setSelectedPhoto(null);
                     setShowDeleteConfirmation(false);
                   })
                   .catch((error) => {
@@ -94,7 +86,7 @@ const UserPanel = () => {
     setShowDeleteConfirmation(false);
   };
 
-  useEffect(() => {
+  useEffect(() => { //functia care afiseaza fotografiile fiecarui utilizator in baza de date
     const auth = getAuth();
 
     setPersistence(auth, browserLocalPersistence)
@@ -124,7 +116,7 @@ const UserPanel = () => {
       });
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { //functia care verifica daca un utilizator este conectat
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -149,7 +141,7 @@ const UserPanel = () => {
 
     return () => unsubscribe();
   }, []);
-
+  //codul JSX pentru interfata
   return (
     <div>
       <div className='bg-gradient-to-b from-blue-100 to-indigo-200 w-screen h-screen fixed z-30'>
@@ -166,7 +158,7 @@ const UserPanel = () => {
                 <div className="relative z-50">
                   <div className="user-button text-indigo-50 h-10 bg-transparent p-2 flex items-center rounded-md">
                     <img className="w-8 h-8 rounded-full mr-2" src="./images/pfp.png  " alt="" />
-                    <span className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis max-[290px]:hidden">
+                    <span /*Aici este afisat numele fiecarui utilizator*/ className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis max-[290px]:hidden">
                       {userData.name}
                     </span>
                   </div>
@@ -176,7 +168,7 @@ const UserPanel = () => {
           </div>
         </nav>
         <div className='photo-grid-container h-[calc(100vh-4rem)] overflow-y-auto'>
-          <div className="photo-grid bg-indigo-100 bg-opacity-50 rounded-md drop-shadow-md grid grid-cols-1 scroll sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 m-6 p-4">
+          <div /*aici sunt afisate imaginile in galerie*/ className="photo-grid bg-indigo-100 bg-opacity-50 rounded-md drop-shadow-md grid grid-cols-1 scroll sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 m-6 p-4">
             {photos.map((photoUrl) => (
               <div key={photoUrl} className="bg-white rounded-lg shadow-md overflow-hidden relative">
                 <img src={photoUrl} alt="" className="w-full h-full object-cover" />
@@ -202,7 +194,7 @@ const UserPanel = () => {
           </div></div>
 
         {showLogoutConfirmation && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div /*Functionalitatea deconectarii*/ className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div className="bg-white p-4 rounded shadow-md">
               <p className="mb-4">Ești sigur că vrei să te deconectezi?</p>
               <div className="flex justify-end">
@@ -216,7 +208,7 @@ const UserPanel = () => {
             </div>
           </div>
         )}
-        <button
+        <button /*Butonul de trimis catre Editorul foto*/
           className="p-4 rounded-2xl fixed bottom-4 right-4 drop-shadow-sm bg-indigo-300 hover:bg-purple-200 transition-colors duration-500"
           onClick={goToCanvas}
         >
@@ -224,11 +216,11 @@ const UserPanel = () => {
         </button>
         <button
           className="logout-button fixed bottom-4 left-4 p-4 rounded-2xl drop-shadow-sm bg-indigo-300 hover:bg-purple-200 transition-colors duration-500"
-          onClick={handleLogout}
+          onClick={handleLogout} /*Butonul de deconectare*/
         >
           <RiLogoutBoxLine className="w-6 h-6 text-slate-600" />
         </button>
-        {showDeleteConfirmation && (
+        {showDeleteConfirmation && ( /*Conditia de stergere a imaginilor printr-un meniu modal de confirmare*/
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div className="bg-white p-4 rounded shadow-md">
               <p className="mb-4">Ești sigur că vrei să stergi această fotografie?</p>

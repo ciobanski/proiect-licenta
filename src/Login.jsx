@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react'; //Liniile 1-6 sunt responsabile cu importarea 
+import { useNavigate } from 'react-router-dom';//bibliotecilor utilizate in pagina
 import { FiAtSign, FiLock } from 'react-icons/fi';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const LoginForm = () => {
-  const navigate = useNavigate();
+const LoginForm = () => { //initializarea functiei LoginForm
+  const navigate = useNavigate(); //declararea tuturor starilor folosind hook-uri
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
+  const handleSubmit = (e) => { //functia handleSubmit() care se ocupa cu
+    e.preventDefault();       //functionalitatea autentificarii
+    const auth = getAuth();   //folosind Firebase
+    signInWithEmailAndPassword(auth, email, password) //Aici este implementata functionalitatea
       .then(() => {
         console.log('login success');
         toast.success('Autentificarea a avut succes!', {
@@ -32,7 +32,7 @@ const LoginForm = () => {
         console.log(error);
       });
   };
-
+  // Aici este implementata partea de cod JSX in care este construita interfata paginii, folosind Tailwind CSS
   return (
     <div className="main-container min-h-screen min-w-screen bg-cover bg-no-repeat bg-center" style={{ backgroundImage: "url('images/homebg.jpg')" }}>
       <div className="flex justify-center items-center min-h-screen">
@@ -48,7 +48,7 @@ const LoginForm = () => {
                   id="email"
                   className="w-full px-3 py-2 pl-6 border-b border-gray-300 text-gray-300 bg-transparent focus:outline-none placeholder-gray-300 placeholder-opacity-25"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)} //input-ul email
                   required
                   placeholder="Adresa de e-mail"
                 />
@@ -63,18 +63,18 @@ const LoginForm = () => {
                   id="password"
                   className="w-full px-3 py-2 pl-6 border-b border-gray-300 text-gray-300 bg-transparent focus:outline-none placeholder-gray-300 placeholder-opacity-25"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)} //input-ul parola
                   required
                   placeholder="Parola"
                 />
               </div>
             </div>
             <div className="buttons flex flex-col items-start">
-              <button type="submit" className="my-4 p-2 bg-indigo-700 w-full lg:w-100 xl:w-100 text-white font-medium rounded hover:bg-indigo-900 transition-all">
+              <button /*Butonul care face posibila autentificarea*/ type="submit" className="my-4 p-2 bg-indigo-700 w-full lg:w-100 xl:w-100 text-white font-medium rounded hover:bg-indigo-900 transition-all">
                 Autentifică-te
               </button>
               <div className="links flex flex-row">
-                <button className="text-gray-400 hover:underline text-xs ml-0 mt-2 lg:mt-0" onClick={() => navigate('/register')}>Încă nu ai un cont?</button>
+                <button /*Butonul care duce la pagina de inregistrare*/ className="text-gray-400 hover:underline text-xs ml-0 mt-2 lg:mt-0" onClick={() => navigate('/register')}>Încă nu ai un cont?</button>
               </div>
             </div>
 
